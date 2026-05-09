@@ -1,4 +1,4 @@
-import {integer, pgTable, timestamp, varchar} from "drizzle-orm/pg-core";
+import {index, integer, pgTable, timestamp, unique, varchar} from "drizzle-orm/pg-core";
 import {relations} from "drizzle-orm";
 
 const timestamps = {
@@ -17,10 +17,13 @@ export const departments = pgTable('departments', {
 export const subjects = pgTable('subjects', {
     id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
     departmentId: integer('department_id').notNull().references(() => departments.id, {onDelete: 'restrict'}),
-    name: varchar('name', {length: 255}).notNull().unique(),
+    name: varchar('name', {length: 255}).notNull(),
     description: varchar('description', {length: 255}),
         ...timestamps
-})
+}, (table) => ({
+    uniqueDepartmentName: unique('uq_subjects_department_name').on(table.departmentId, table.name),
+    departmentIdIdx: index('idx_subjects_department_id').on(table.departmentId),
+}))
 
 export const departmentRelations = relations(departments, ({many}) => ({
     subjects: many(subjects)
