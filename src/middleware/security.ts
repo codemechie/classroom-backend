@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from 'express';
 import aj from '../config/arcjet'
 import {ArcjetNodeRequest, slidingWindow} from "@arcjet/node";
 const securityMiddleware = async(req: Request, res: Response, next: NextFunction) => {
-if(process.env.NODE_ENV !== 'test') return next();
+if(process.env.NODE_ENV == 'test') return next();
 try {
     const role: RateLimitRole = req.user?.role ?? 'guest';
     let limit: number;
@@ -45,6 +45,9 @@ try {
     }
     if(decision.isDenied() && decision.reason.isRateLimit()) {
         return res.status(403).json({error: 'Unauthorized', message: 'Rate limit exceeded'});
+    }
+    if(decision.isDenied()) {
+        return res.status(403).json({error: 'Unauthorized', message: 'Request denied by security policy'});
     }
     next();
 } catch(e) {

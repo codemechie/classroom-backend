@@ -1,6 +1,6 @@
 import arcjet, {shield, detectBot, slidingWindow} from "@arcjet/node";
-if (!process.env.NODE_ENV && !process.env.ARCJET_KEY) {
-    throw new Error("ARCJET_ENV_KEY environment variable is missing");
+if (!process.env.ARCJET_KEY) {
+    throw new Error("ARCJET_KEY environment variable is missing");
 }
 const aj = arcjet({
     // Get your site key from https://app.arcjet.com and set it as an environment
