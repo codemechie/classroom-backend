@@ -1,10 +1,9 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db"; // your drizzle instance
+import { db } from "../db";
 import * as schema from '../db/schema/auth'
 
-export const auth = betterAuth({
-const AUTH_SECRET = process.env.AUTH_SECRET;
+const AUTH_SECRET = process.env.BETTER_AUTH_SECRET;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
 if (!AUTH_SECRET) {
@@ -21,21 +20,18 @@ export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: "pg",
         schema
-    database: drizzleAdapter(db, {
-        provider: "pg",
-        schema
     }),
     emailAndPassword: {
         enabled: true
     },
-        user: {
-            additionalFields: {
-                role: {
-                    type: "string", required: true, defaultValue: 'student', input: true
-                },
-                imageCldPubId: {
-                    type: "string", required: false, input: true
-                }
+    user: {
+        additionalFields: {
+            role: {
+                type: "string", required: true, defaultValue: 'student', input: true
+            },
+            imageCldPubId: {
+                type: "string", required: false, input: true
             }
         }
+    }
 });
