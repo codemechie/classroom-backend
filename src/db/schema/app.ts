@@ -45,8 +45,8 @@ export const classes = pgTable('classes', {
     bannerCldPubId: text('banner_cld_pub_id'),
     bannerUrl: text('banner_url'),
     description: text('description'),
-    capacity: integer('capacity').default(50),
-    status: classStatus('status').default('active'),
+    capacity: integer('capacity').default(50).notNull(),
+    status: classStatus('status').default('active').notNull(),
     schedules: jsonb('schedules').$type<Schedule[]>(),
     ...timestamps
 }, (table) => ({
