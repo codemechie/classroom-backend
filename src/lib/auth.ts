@@ -4,8 +4,23 @@ import { db } from "../db"; // your drizzle instance
 import * as schema from '../db/schema/auth'
 
 export const auth = betterAuth({
-    secret: process.env.AUTH_SECRET,
-    trustedOrigins: [process.env.FRONTEND_URL!],
+const AUTH_SECRET = process.env.AUTH_SECRET;
+const FRONTEND_URL = process.env.FRONTEND_URL;
+
+if (!AUTH_SECRET) {
+    throw new Error("AUTH_SECRET environment variable is required");
+}
+
+if (!FRONTEND_URL) {
+    throw new Error("FRONTEND_URL environment variable is required");
+}
+
+export const auth = betterAuth({
+    secret: AUTH_SECRET,
+    trustedOrigins: [FRONTEND_URL],
+    database: drizzleAdapter(db, {
+        provider: "pg",
+        schema
     database: drizzleAdapter(db, {
         provider: "pg",
         schema
