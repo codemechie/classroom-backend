@@ -47,7 +47,7 @@ try {
         return res.status(403).json({error: 'Unauthorized', message: 'Rate limit exceeded'});
     }
     if(decision.isDenied()) {
-        return res.status(403).json({error: 'Unauthorized', message: 'Request denied by security policy'});
+        return res.status(429).json({error: 'Unauthorized', message: 'Request denied by security policy'});
     }
     next();
 } catch(e) {
