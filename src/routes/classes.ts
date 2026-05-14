@@ -1,6 +1,6 @@
 import express from "express";
 import {db} from '../db'
-import {classes, subjects, user, type Schedule} from "../db/schema";
+import {classes, subjects, user, type Schedule, departments} from "../db/schema";
 import {z} from "zod";
 import crypto from "crypto"
 import {and, desc, eq, getTableColumns, ilike, or, sql} from "drizzle-orm";
@@ -122,4 +122,29 @@ router.post('/', async(req, res) => {
     }
 })
 
+router.get('/:id', async(req, res) => {
+    const classId = Number(req.params.id);
+    if(!Number.isFinite(classId)) {
+        res.status(400).json({error: "No class found with id " + classId});
+    }
+    const [classDetails] = await db
+        .select({
+            ...getTableColumns(classes),
+            subject: {
+                ...getTableColumns(subjects),
+            },
+            department: {
+                ...getTableColumns(departments),
+            },
+            teacher: {
+                ...getTableColumns(user)
+            }
+        })
+        .from(classes)
+        .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+        .leftJoin(user, eq(classes.teacherId, user.id))
+        .leftJoin(departments, eq(subjects.departmentId, departments.id))
+    if(!classDetails) return res.status(404).json({error: "No class found with id "});
+    return res.status(200).json({data: classDetails});
+})
 export default router;
