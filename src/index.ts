@@ -4,6 +4,9 @@ import cors from "cors";
 import securityMiddleware from "./middleware/security";
 import {toNodeHandler} from "better-auth/node";
 import {auth} from "./lib/auth";
+import AgentApi from "apminsight"
+import AgentAPI from "apminsight";
+AgentAPI.config()
 
 const app = express();
 const port = process.env.PORT || 8000;
